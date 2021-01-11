@@ -65,7 +65,6 @@ def kmeans_random_words_topic(df, X, column='lyrics', model=kmeans):
         for song in sample_articles:
             print(f"    {df.loc[song][column]}")
 
-print('No Errors on KMeans.py')
 
 # Using TfidfVectorizer
 

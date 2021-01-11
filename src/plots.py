@@ -3,9 +3,77 @@ sys.path.append('./src')
 from countvec_cap2 import *
 from KMeans import *
 from lda import *
+from capstone3 import final_df
+import scipy.stats as stats
+import matplotlib.pyplot as plt
+
 
 ly = pd.read_csv('../data/1950_2019_with lyrics.csv')
 ly.drop('Unnamed: 0', axis=1, inplace=True)
+
+
+x = final_df.sadness.values
+
+
+def feature_distribution(feature, feature_name):
+    '''
+    Distribution of any normally distributed feature
+    input:
+        feature: np.array() of feature values
+        feature_name: str. Name of feature for plot title
+    '''
+
+    normal = stats.norm(feature.mean(), feature.std())
+    fig, ax = plt.subplots(figsize=(9, 4), dpi=200)
+
+    ax.scatter(x, normal.pdf(feature), linewidth=0.2, marker='|',color='blue', alpha=0.1000)
+
+
+    ax.set_xlabel(f'{feature_name.capitalize()} Value')
+    ax.set_ylabel(f'Probability of {feature_name.capitalize()} Value (pdf)')
+
+    ax.set_title(f"Distribution of {feature_name.capitalize()} Values")
+
+    ax.grid(alpha=0.3)
+
+    # ax.set_yticks([])
+    
+    ax.axvline(feature.mean(), color='b', linestyle='-', label=f'Overall Mean {feature_name.capitalize()}')
+    ax.legend(frameon=True, facecolor='white', framealpha=1)
+
+    plt.show()
+
+def artist_feature_mean(df, feature_name, artist_name, sadness_color='blue', artist_color='black'):
+    '''
+    Feature mean of specific artist over feature distribution plot
+    '''
+    x = df[feature_name]
+    normal = stats.norm(x.mean(), x.std())
+
+    x2 = df.loc[ly['artist_name']==artist_name]
+    x2 = x2[feature_name]
+
+    fig, ax = plt.subplots(figsize=(9, 4), dpi=200)
+
+    ax.scatter(x, normal.pdf(x), linewidth=0.2, marker='|',color='blue', alpha=0.1000)
+
+    # ax.set_ylim(0.5, 2.5)
+    # ax.set_xlim(0, 0.4)
+
+    ax.set_xlabel(f'{feature_name.capitalize()} Value')
+    ax.set_ylabel(f'Probability of {feature_name.capitalize()} Value (pdf)')
+
+    ax.set_title(f"Distribution of {feature_name.capitalize()} Values")
+
+    ax.grid(alpha=0.3)
+    
+
+    # ax.set_yticks([])
+    ax.axvline(x2.mean(), color='k', linestyle='--', label=f'{artist_name.title()} Mean {feature_name.capitalize()}')
+    ax.axvline(x.mean(), color='b', linestyle='-', label=f'Overall Mean {feature_name.capitalize()}')
+    ax.legend(frameon=True, facecolor='white', framealpha=1)
+
+    plt.show()
 
 def score_per_k(model, y1, y2, y3):
     '''
@@ -44,20 +112,20 @@ y = pd.Series({'6':13865039.19,
                 '4':13794715.81973467}).sort_values(ascending=False)
 
 
-ax.bar(y.keys(), y, alpha=0.7)
+# ax.bar(y.keys(), y, alpha=0.7)
 
-ax.set_title('LDA LogLikelihood Score vs K Value')
+# ax.set_title('LDA LogLikelihood Score vs K Value')
 
-ax.set_xlabel('K Value', fontsize=13)
-ax.set_ylabel('LogLikelihood Score', fontsize=13)
+# ax.set_xlabel('K Value', fontsize=13)
+# ax.set_ylabel('LogLikelihood Score', fontsize=13)
 
 
-ax.set_yscale('log')
+# ax.set_yscale('log')
 
-ax.legend()
-plt.show()
+# ax.legend()
+# plt.show()
 
-plt.savefig('../images/lda_score.png')
+# plt.savefig('../images/lda_score.png')
 
 
 
