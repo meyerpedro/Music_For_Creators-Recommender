@@ -32,7 +32,7 @@ def feature_distribution(feature, feature_name):
     ax.set_xlabel(f'{feature_name.capitalize()} Value')
     ax.set_ylabel(f'Probability of {feature_name.capitalize()} Value (pdf)')
 
-    ax.set_title(f"Distribution of {feature_name.capitalize()} Values")
+    ax.set_title(f'Distribution of {feature_name.capitalize()} Values')
 
     ax.grid(alpha=0.3)
 
