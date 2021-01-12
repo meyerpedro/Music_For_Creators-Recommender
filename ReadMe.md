@@ -2,29 +2,36 @@
 _by Pedro Meyer_
 
 
-![frankocean](images/youarewhatyoulisten.png)
+<img src='images/youarewhatyoulisten.jpeg' alt='drawing'>
+
 [Pinterest.com](https://in.pinterest.com/pin/684758318330686093/)
 
 
 ## Background & Motivation
 
-We all have heard of companies like Spotify, Apple Music, Amazon Music, Pandora, and others. They all have their own ways to recommend music to their users. Usually they are based on...
+We all have heard of companies like Spotify, Apple Music, Amazon Music, Pandora... They all have their own ways to recommend music to their users. Usually, they are based on:
 
 - User Ratings
 - Similar Artists
 - Similar Styles
 - Similar Genres
-- etc….
 
 But what if we want more control over our recommenders?
 
 I have been in the music world for over 17 years as a songwriter, multi-instrumentalist, composer and producer, and I am always dissapointed with the tools available to help creators in their process.
 
-I aim to create a new song recommender that incorporates song topics, based on their lyrics, into it, as well as acoustic features, all inputed by the user.
+The goal is to create a recommender where the user can input lyrics and acoustic data from their own songs to get more customized song recommendations.
 
-This recommender will user NLP and Clustering models to find similarities between user input and item features to generate recommendations
+Users will get value in form of:
+- Inspiration
+- Insight on their creative process
+- Comparison with other artists
 
-![goal](images/goal.png)
+This recommender will use Natural Language Processing models to find similarities between user input and item features to generate recommendations
+
+## Workflow
+
+<img src='images/workflow.jpg' alt='drawing' width=800>
 
 ## Data
 
@@ -34,105 +41,174 @@ The main dataset used for this project is titled "Music Dataset: Lyrics and Meta
 |----------:|------:|------:|----:|-----:|
 |backstreet boys | as long as you love me | pop     |           1996 | long loneliness friend leave life hand people crazy blind risk glance blind mystery head care write history long care long care long...|
 
-## Workflow
+## Acoustic Features
 
-![workflow](images/workflow.png)
+The _Acoustic Features_ are the acoustic qualities of a song. These calculations are now widely based on Spotify's API. They quantify how a track sounds like.
 
-## Explaining Acoustic Features
+There are many acoustic features, also called acoustic metadata. This recommender will use the following features:
 
-Take a look at the follow images. How would you describe the music based only on the pictures?
+- Sadness
+- Acousticness
+- Valence
+- Energy
+- Danceability
 
-![kiss](images/slides/Kiss-live-Vancouver-2019.jpg)
+The Spotify API allows us to look into those features for all songs on their library.
 
-Impressions...
+## Acoustic Features - Sadness
 
-- Loud
-- Energetic
-- Heavy
-- Party every day
+Let's take 'Sadness' for example. 'Sadness' is a combination of a low 'Valence' and 'Energy' scores:
 
-![taylor](images/slides/taylor-swift-in-the-studio.jpg)
+<img src='images/sadnessspectrum.png' alt='drawing' width=800 hight=500>
 
-- Mellow
-- Sad
-- Slow
-- Breakups
+> Valence:
+*Describes the musical positiveness conveyed by a track.*
 
-![nwa](images/slides/nwa.jpg)
-- Angry
-- Social Critic
-- “Wordy”
-- *&#^*$(
+> Energy:
+*Represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy.*
 
-These descriptions can all be summarized and calculated. These calculations are now widely based on Spotify's API. These are the _Acoustic Features_ of a song.
+<br>
 
-![acousticfeature](images/acousticfeatures.png)
+This is the distribution of 'Sadness' in the recommender's database:
 
-The Spotify API allows us to look into those features for all songs on their library. Lukily, our dataframe already contains that information.
+<img src='images/sadnessdistribution.png' alt='drawing' width=800>
 
-## Calculating Topics
+## Making it Concrete
 
-In this part of the process, two Natural Language Processing models were created. The Latent Dirichlet Allocation (LDA) was the best performing one in opposition to a KMeans clustering model. LDA models are soft models, which allows words to be part of more than one cluster/topic.
+As ilustration, here is how these two artists compare in terms of 'Sadness' and how they place in the scale:
 
-Two main components are tuned in order to get the best predictions. K value or ```n_clusters``` value, and the ```learning_decay``` value. The _perplexity_ score was used to evaluate performance.
+<img src="images/slides/taylorswift.png" alt="drawing" width="200"/>
 
-> Perplexity captures how surprised a model is of new data it has not seen before, and is measured as the normalized log-likelihood of a held-out test set.
+<img src="images/slides/ironmaiden.jpeg" alt="drawing" width="200"/>
 
-![perplexity](images/lda_perplexity.png)
+<br>
+<br>
 
-Even though ```k = 4``` gave the best score, unsupervised learning models are not as black and white. Because they don't have a target based on other features, it is hard to have a precise accuracy measure. Therefore, I ended up using ```k = 5``` as it had the best balance between the perplexity score and the visual coherence of the topics, which will be shown later on.
+<img src="images/sadnessdistributionoverall.png" alt="drawing" width=800/>
 
-Assuming ```k = 5```, different values of the ```learning_decay``` were tested:
+<br>
 
-![decay](images/lda_learningdecay.png)
+As expected, Iron Maiden has a lower average 'Sadness' score than Taylor Swift
 
-Thus, our final model was tuned to ```n_clusters = 5``` and ``` learning_decay = 0.7```
+
+## Topics Features - Natural Language Processing
+
+In this part of the process, two Natural Language Processing models were created. The Latent Dirichlet Allocation (LDA) was the best performing one in opposition to a KMeans clustering model. LDA models are soft-clustering models, which allows words to be part of more than one cluster/topic.
+
+The LDA model will take the raw lyrics from the database and cluster them into topics that will then be used as a comparison feature to the user input.
+
+<br>
+
+<img src='images/nlp.jpg' alt='drawing' width=800>
+
+
 
 ## Analizing the Clustering Results
 
-The LDA model clusters words together based on their similatities. As a songwriter who is interested in the words, it was helpful to pull up as many words as possible and look at the the most discriptive words one by one. Here are the top 50 words per topic according to our model:
+The LDA model clusters words together based on their similatities. As a songwriter who is interested in the words, it was helpful to pull up as many words as possible and look at the the most discriptive words one by one. Here are the top 50 words per topic according to this model:
 
 
-> Topic 1: \
-long night **home** blue tonight play **music** hear comin bring radio dance **sing** **roll** ring **swing** woah lookin band song guitar songs morning doin **christmas** tryin little walkin young **lord** listen train tire tell school waitin wine **country** thinkin **movin** lovin runnin days gyal bass record alright **rhythm** good **dancin**
+| Topic | Most Common Words |
+|-|-|
+| Religious | long night **home** blue tonight play **music** hear comin bring radio dance **sing** **roll** ring **swing** woah lookin band song guitar songs morning doin **christmas** tryin little walkin young **lord** listen train tire tell school waitin wine **country** thinkin **movin** lovin runnin days gyal bass record alright **rhythm** good **dancin** |
+| Human Struggle | away **life heart** feel **live** leave want **world break** think mind need tell look good change **dream** eye lose **believe** walk fall stay things tear inside turn love place long stand hand remember **face** true night better wanna little start wait **girl** lonely days wish **forget wrong** hard today hurt |
+| Party/Fun | f@@k **money** s@@t b@@@h wanna want tell gotta better good bout real **party** think need ready **play** talk look stop **girl smoke** game people **damn** everybody check roll drop **kick head drink beat** little goin start watch **high** work feel mouth **sick** talkin stick hard nothin ball straight **shoot** hand |
+| Senses | **sing hear song sweet fall kiss** word **cold** night **sleep miss dream** arm summer touch **devil sound write voice dear** bring light speak lips warm little power lover river **human burn read moon** babylon music build desire strong snow winter land thrill begin whisper hand spring near **ring promise freedom** |
+| Anger/Dissent | **black kill dead fight** head **blood lyric hell death** commercial hand **shoot** stand **grind soul** white **burn save lord live die bleed** follow scream hole **rise** water skin **fear** breathe earth face **ghost blind** bear land lie body shame wind **grave cross truth raise children bury** |
 
->Topic 2: \
-away **life heart** feel **live** leave want **world break** think mind need tell look good change **dream** eye lose **believe** walk fall stay things tear inside turn love place long stand hand remember **face** true night better wanna little start wait **girl** lonely days wish **forget wrong** hard today hurt
 
->Topic 3: \
-f@@k **money** s@@t b@@@h wanna want tell gotta better good bout real **party** think need ready **play** talk look stop **girl smoke** game people **damn** everybody check roll drop **kick head drink beat** little goin start watch **high** work feel mouth **sick** talkin stick hard nothin ball straight **shoot** hand
 
->Topic 4: \
-**sing hear song sweet fall kiss** word **cold** night **sleep miss dream** arm summer touch **devil sound write voice dear** bring light speak lips warm little power lover river **human burn read moon** babylon music build desire strong snow winter land thrill begin whisper hand spring near **ring promise freedom**
+## Proof of Concept
 
->Topic 5: \
-**black kill dead fight** head **blood lyric hell death** commercial hand **shoot** stand **grind soul** white **burn save lord live die bleed** follow scream hole **rise** water skin **fear** breathe earth face **ghost blind** bear land lie body shame wind **grave cross truth raise children bury**
+Let's say our user is a guy named John Mayer and he has the following song:
 
-## Putting It All Together
 
-### User example.
+<img src="images/slides/continuum.png" alt="drawing" width=200>
 
-Let's say our user's name is John Mayer and he has the following song:
+[Waiting on the World to Change](https://www.youtube.com/watch?v=pquX7Ya4-wE)
+    
+<br>
 
-**USER**
+He would input the features for his songs, including lyrics and acoustic features:
 
-![john](images/slides/johnmayer.jpg)
+<img src="images/userprofile.png" alt="drawing" width=800/>
 
-**SONG**
-![table](images/slides/johntable1.png)
-![table2](images/slides/johntable2.png)
+<br>
+<br>
+<br>
+
+That input would give the following recommendations:
+
+| Artist Name | Track Name | Release Year | Genre | Lyrics |
+|-|-|-|-|-|
+| Paul McCartney | Ram On | 1971 | Rock | Ram on, give your heart to somebody<br>Soon, right away, right away<br>Who's that coming now, they're coming<br>Who's that coming now, now, baby? |
+| The Black Keys | Thickfreakness | 2003 | Blues | Here I am darling<br>And I'll care for you, hey that's all I want to do<br>Hold me, love me, in your heart<br>And I'll hold you near and I'll whisper in your ear<br>I'll take your hand and I'll make you understand<br>Hold me, love me in your heart |
+| George Benson | When Love Has Grown | 1973 | Jazz | When love has grown<br>Up to the point of love<br>When the tears that are cried<br>Are not the sweet tears of joy<br>You know the sun has surely made its final dawning<br>When love has died<br>Instead of growing on<br>When love can grow<br>Up to the point of love<br>When the tears that are cried<br>Can be the sweet tears of joy<br>Then we'll have days that are filled with days and nights<br>Of loving, you & me<br>Then love will ever be growing on<br>When love can grow<br>Up to the point of love<br>Mmmm, when the tears that are cried<br>Can be the sweet tears of joy<br>Then we'll have days that are filled with days and nights<br>Of loving, you & me<br>Then love will ever be growing on |
+
+## And Just for Reference...
+
+This is how the average John Mayer song, and the 'Waiting on the World to Change" song stack up on the 'Sadness' distribution:
+
+<img src="images/johnmayersadness.png" alt="drawing" width=800/>
+
+
+## Future Work
+
+Now that the recommender is live, a few steps can be made in the future to optimize it:
+
+- Add more feature
+- Make results more customizable
+- Add "Explicit" filter
+- Create a user interface
+
+## Conclusion
+With this new recommender, musicians can input detailed information in order to get more tailored song recommendations. These songs can be used in a number of ways to help musicians in their creative process.
+
+# References
+
+Data:
+[Mendeley Data](https://data.mendeley.com/datasets/3t9vbwxgr5/2)
+
+Acoustic Features: \
+[Get Audio Features for a Track](https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-features/) \
+[Can data reveal the saddest number one song ever?](https://www.bbc.com/culture/article/20180821-can-data-reveal-the-saddest-song-ever)
+
+
+Images: \
+[Sadness Spectrum Graph](https://www.bbc.com/culture/article/20180821-can-data-reveal-the-saddest-song-ever) \
+[Iron Maiden Album Cover](https://www.target.com/p/iron-maiden-life-after-death-cd/-/A-80178481) \
+[Taylor Swift Album Cover](https://people.com/music/taylor-swift-album-covers-roundup/) \
+[John Mayer User Profile Picture](https://imgur.com/gallery/LZt3K) \
+[Continuum Album Cover](https://en.wikipedia.org/wiki/Continuum_(John_Mayer_album))
+
+# Appendix
+
+## Remaining Acoustic Feature Distributions
+
+<img src="images/energy.png" alt="drawing" width=700/>
+<img src="images/danceability.png" alt="drawing" width=700/>
+<img src="images/acousticness.png" alt="drawing" width=700/>
+<img src="images/valence.png" alt="drawing" width=700/>
 
 <br>
 
-He wants to get recommendations based on his song. For that, he will be able to input his lyrics and acoustic features into the recommender:
+## LDA Model Tuning
 
-![rec](images/slides/recommendermessagesandinput.png)
+<img src="images/lda_perplexity.png" alt="drawing" width=700/>
+<img src="images/lda_learningdecay.png" alt="drawing" width=700/>
 
 <br>
 
-With that input, these are the recommended songs:
+## KMeans Model Tuning
 
-![result](images/slides/results.png)
+<img src="images/distortion_scores_kmeans.png" alt="drawing" width=700/>
+
+
+
+
+
+
+
 
 
 
