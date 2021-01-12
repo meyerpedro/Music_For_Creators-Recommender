@@ -43,10 +43,15 @@ def feature_distribution(feature, feature_name):
 
     plt.show()
 
-def artist_feature_mean(df, feature_name, artist_name, sadness_color='blue', artist_color='black'):
-    '''
-    Feature mean of specific artist over feature distribution plot
-    '''
+def artist_feature_mean(df, feature_name, artist_name, feature_color='blue', artist_color='black'):
+    """
+    Args:
+        df (panda dataframe): df containing features
+        feature_name ([type]): feature to be plotted
+        artist_name ([type]): artist name to specify feature range
+        feature_color (str, optional): [color of the plot]. Defaults to 'blue'.
+        artist_color (str, optional): [description]. Defaults to 'black'.
+    """    '''    '''
     x = df[feature_name]
     normal = stats.norm(x.mean(), x.std())
 
@@ -55,7 +60,7 @@ def artist_feature_mean(df, feature_name, artist_name, sadness_color='blue', art
 
     fig, ax = plt.subplots(figsize=(9, 4), dpi=200)
 
-    ax.scatter(x, normal.pdf(x), linewidth=0.2, marker='|',color='blue', alpha=0.1000)
+    ax.scatter(x, normal.pdf(x), linewidth=0.2, marker='|',color=feature_color, alpha=0.1000)
 
     # ax.set_ylim(0.5, 2.5)
     # ax.set_xlim(0, 0.4)
@@ -69,8 +74,8 @@ def artist_feature_mean(df, feature_name, artist_name, sadness_color='blue', art
     
 
     # ax.set_yticks([])
-    ax.axvline(x2.mean(), color='k', linestyle='--', label=f'{artist_name.title()} Mean {feature_name.capitalize()}')
-    ax.axvline(x.mean(), color='b', linestyle='-', label=f'Overall Mean {feature_name.capitalize()}')
+    ax.axvline(x2.mean(), color=artist_color, linestyle='--', label=f'{artist_name.title()} Mean {feature_name.capitalize()}')
+    ax.axvline(x.mean(), color=feature_color, linestyle='-', label=f'Overall Mean {feature_name.capitalize()}')
     ax.legend(frameon=True, facecolor='white', framealpha=1)
 
     plt.show()
