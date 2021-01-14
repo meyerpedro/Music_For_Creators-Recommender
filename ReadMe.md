@@ -157,7 +157,7 @@ This is how the average John Mayer song, and the 'Waiting on the World to Change
 Now that the recommender is live, a few steps can be made in the future to optimize it:
 
 - Add more feature
-- Make results more customizable
+- Make results more customizable, sort the results by year and genre for example
 - Add "Explicit" filter
 - Create a user interface
 
