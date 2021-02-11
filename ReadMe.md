@@ -18,7 +18,7 @@ We all have heard of companies like Spotify, Apple Music, Amazon Music, Pandora.
 
 But what if we want more control over our recommenders?
 
-I have been in the music world for over 17 years as a songwriter, multi-instrumentalist, composer and producer, and I am always dissapointed with the tools available to help creators in their process.
+I have been in the music world for over 17 years as a songwriter, multi-instrumentalist, composer and producer, and I am always disapointed with the tools available to help creators in their process.
 
 The goal is to create a recommender where the user can input lyrics and acoustic data from their own songs to get more customized song recommendations.
 
